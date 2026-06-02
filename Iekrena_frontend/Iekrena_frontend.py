@@ -1,36 +1,21 @@
-"""Welcome to Reflex! This file outlines the steps to create a basic app."""
-
 import reflex as rx
+from Iekrena_frontend.pages.home import home
+from Iekrena_frontend.pages.destinos import destinos
+from Iekrena_frontend.pages.detalles import detalles
+from Iekrena_frontend.pages.reservas import reservas
+from Iekrena_frontend.pages.contacto import contacto
 
-from rxconfig import config
 
-
-class State(rx.State):
-    """The app state."""
-
-
-def index() -> rx.Component:
-    # Welcome Page (Index)
-    return rx.container(
-        rx.color_mode.button(position="top-right"),
-        rx.vstack(
-            rx.heading("Welcome to Reflex!", size="9"),
-            rx.text(
-                "Get started by editing ",
-                rx.code(f"{config.app_name}/{config.app_name}.py"),
-                size="5",
-            ),
-            rx.link(
-                rx.button("Check out our docs!"),
-                href="https://reflex.dev/docs/getting-started/introduction/",
-                is_external=True,
-            ),
-            spacing="5",
-            justify="center",
-            min_height="85vh",
-        ),
+app = rx.App(
+    theme=rx.theme(
+        appearance="light",
+        accent_color="cyan",
+        radius="large",
     )
+)
 
-
-app = rx.App()
-app.add_page(index)
+app.add_page(home, route="/", title="IEKRENA TRIPS")
+app.add_page(destinos, route="/destinos", title="Destinos")
+app.add_page(detalles, route="/detalles", title="Detalles del viaje")
+app.add_page(reservas, route="/reservas", title="Reservas")
+app.add_page(contacto, route="/contacto", title="Contacto")

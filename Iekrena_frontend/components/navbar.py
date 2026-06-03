@@ -115,14 +115,12 @@ def navbar(active_page: str = "inicio"):
 
             divider(),
 
-          rx.hstack(
-    circle_icon("/search.png"),
+         
+    rx.hstack(
+    circle_icon("/search.png", "/"),
+    circle_icon("/user.png", "/admin"),
 
-    rx.link(
-        circle_icon("/user.png"),
-        href="/admin",
-        text_decoration="none",
-    ),
+  
 
     rx.link(
         rx.button(

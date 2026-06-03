@@ -63,7 +63,7 @@ DESTINOS = [
         "servicios": ["Hotel", "Tour cultural", "Transporte", "Guía"],
         "itinerario": ["Llegada", "Tour cultural", "Excursión natural", "Regreso"],
         "experiencias": [
-            {"titulo": "Dunn’s River Falls", "imagen": "/dunns_river_experience.jpg"},
+            {"titulo": "Dunn's River Falls", "imagen": "/dunns_river_experience.jpg"},
             {"titulo": "Ruta del reggae", "imagen": "/reggae_experience.jpg"},
             {"titulo": "Blue Mountains", "imagen": "/blue_mountains_experience.jpg"},
         ],
@@ -287,15 +287,21 @@ def detalle_card(destino):
                     width="100%",
                 ),
 
-                rx.button(
-                    "Reservar ahora",
-                    background="#FFB703",
-                    color="#001D3D",
-                    border_radius="10px",
-                    height="48px",
-                    padding="0 28px",
-                    font_weight="900",
-                    margin_top="10px",
+                rx.link(
+                    rx.button(
+                        "Reservar ahora",
+                        background="#FFB703",
+                        color="#001D3D",
+                        border_radius="10px",
+                        height="48px",
+                        padding="0 28px",
+                        font_weight="900",
+                        margin_top="10px",
+                        cursor="pointer",
+                        _hover={"background": "#FFC107"},
+                        transition="background 0.15s",
+                    ),
+                    href="/reservas",
                 ),
 
                 spacing="4",
@@ -338,10 +344,10 @@ def detalles():
                 align="center",
             ),
             height="55vh",
-            background="""
-            linear-gradient(rgba(0,20,35,.55), rgba(0,20,35,.60)),
-            url('/hero.png')
-            """,
+            background=(
+                "linear-gradient(rgba(0,20,35,.55), rgba(0,20,35,.60)),"
+                "url('/hero.png')"
+            ),
             background_size="cover",
             background_position="center",
             display="flex",

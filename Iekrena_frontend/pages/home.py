@@ -3,9 +3,12 @@ from Iekrena_frontend.components.navbar import navbar
 from Iekrena_frontend.components.footer import footer
 
 
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
 def destino_card(nombre: str, pais: str, precio: str, rating: str, imagen: str):
     return rx.box(
         rx.vstack(
+            # Imagen con badge flotante
             rx.box(
                 rx.image(
                     src=imagen,
@@ -22,12 +25,7 @@ def destino_card(nombre: str, pais: str, precio: str, rating: str, imagen: str):
                             border_radius="999px",
                             background="#0077B6",
                         ),
-                        rx.text(
-                            nombre,
-                            font_size="13px",
-                            font_weight="700",
-                            color="#001D3D",
-                        ),
+                        rx.text(nombre, font_size="13px", font_weight="700", color="#001D3D"),
                         spacing="1",
                         align="center",
                     ),
@@ -42,19 +40,21 @@ def destino_card(nombre: str, pais: str, precio: str, rating: str, imagen: str):
                 position="relative",
                 width="100%",
             ),
+
+            # Cuerpo
             rx.vstack(
                 rx.hstack(
                     rx.text("⭐", font_size="14px"),
-                    rx.text(rating, color="#888", font_size="13px", font_weight="600"),
+                    rx.text(rating, color="#888888", font_size="13px", font_weight="600"),
                     spacing="1",
                     align="center",
                 ),
                 rx.heading(nombre, size="5", color="#001D3D", font_weight="800"),
-                rx.text(pais, color="#888", font_size="14px"),
+                rx.text(pais, color="#888888", font_size="14px"),
                 rx.divider(border_color="#E8EDF2"),
                 rx.hstack(
                     rx.vstack(
-                        rx.text("Desde", color="#888", font_size="12px"),
+                        rx.text("Desde", color="#888888", font_size="12px"),
                         rx.hstack(
                             rx.text(precio, color="#0077B6", font_weight="900", font_size="26px"),
                             rx.text("USD", color="#0077B6", font_size="13px", font_weight="700", padding_top="6px"),
@@ -65,15 +65,21 @@ def destino_card(nombre: str, pais: str, precio: str, rating: str, imagen: str):
                         align="start",
                     ),
                     rx.spacer(),
-                    rx.button(
-                        "Ver detalles",
-                        background="#0077B6",
-                        color="white",
-                        border_radius="12px",
-                        padding="10px 22px",
-                        font_size="14px",
-                        font_weight="700",
-                        cursor="pointer",
+                    rx.link(
+                        rx.button(
+                            "Ver detalles",
+                            background="#0077B6",
+                            color="white",
+                            border_radius="12px",
+                            padding="10px 22px",
+                            font_size="14px",
+                            font_weight="700",
+                            cursor="pointer",
+                            border="none",
+                            _hover={"background": "#005F92"},
+                            transition="background 0.15s",
+                        ),
+                        href="/detalles",
                     ),
                     width="100%",
                     align="center",
@@ -82,6 +88,7 @@ def destino_card(nombre: str, pais: str, precio: str, rating: str, imagen: str):
                 align="start",
                 width="100%",
             ),
+
             spacing="3",
             align="start",
             width="100%",
@@ -91,6 +98,11 @@ def destino_card(nombre: str, pais: str, precio: str, rating: str, imagen: str):
         padding="16px",
         box_shadow="0 8px 32px rgba(0,0,0,0.10)",
         overflow="hidden",
+        transition="transform 0.22s, box-shadow 0.22s",
+        _hover={
+            "transform": "translateY(-6px)",
+            "box_shadow": "0 18px 48px rgba(0,0,0,0.15)",
+        },
     )
 
 
@@ -108,17 +120,26 @@ def experiencia_card(imagen: str, titulo: str, texto: str):
             box_shadow="0 8px 24px rgba(0,119,182,0.16)",
         ),
         rx.heading(titulo, size="4", color="#001D3D", text_align="center", font_weight="800"),
-        rx.text(texto, color="#6B7280", text_align="center", font_size="14px", line_height="1.6", max_width="200px"),
+        rx.text(
+            texto,
+            color="#6B7280",
+            text_align="center",
+            font_size="14px",
+            line_height="1.6",
+            max_width="200px",
+        ),
         spacing="3",
         align="center",
     )
 
 
+# ── Page ──────────────────────────────────────────────────────────────────────
+
 def home():
     return rx.box(
         navbar("inicio"),
 
-        # — HERO —
+        # ── HERO ──────────────────────────────────────────────────────────────
         rx.box(
             rx.vstack(
                 # Badge
@@ -135,7 +156,7 @@ def home():
                     box_shadow="0 4px 16px rgba(255,183,3,0.40)",
                 ),
 
-                # Titulo
+                # Título
                 rx.heading(
                     "EXPLORA EL CARIBE",
                     color="white",
@@ -146,7 +167,7 @@ def home():
                     text_shadow="0 4px 24px rgba(0,0,0,0.50)",
                 ),
 
-                # Subtitulo italica
+                # Subtítulo itálica
                 rx.text(
                     "como nunca antes",
                     color="#FFB703",
@@ -157,7 +178,7 @@ def home():
                     text_shadow="0 4px 18px rgba(0,0,0,0.40)",
                 ),
 
-                # Descripcion
+                # Descripción
                 rx.text(
                     "Reserva playas paradisíacas, resorts de lujo y aventuras inolvidables.",
                     color="white",
@@ -168,7 +189,7 @@ def home():
                     line_height="1.5",
                 ),
 
-                # Barra de busqueda
+                # Barra de búsqueda
                 rx.box(
                     rx.hstack(
                         rx.el.input(
@@ -222,6 +243,8 @@ def home():
                             padding="0 28px",
                             border="none",
                             cursor="pointer",
+                            _hover={"background": "#FFC107"},
+                            transition="background 0.15s",
                         ),
                         spacing="3",
                         align="center",
@@ -238,13 +261,10 @@ def home():
             ),
 
             height="100vh",
-            background="""
-            linear-gradient(
-                rgba(0,0,0,0.18),
-                rgba(0,0,0,0.35)
+            background=(
+                "linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.35)),"
+                "url('/hero.png')"
             ),
-            url('/hero.png')
-            """,
             background_size="cover",
             background_position="center",
             display="flex",
@@ -255,7 +275,7 @@ def home():
             padding_right="20px",
         ),
 
-        # — DESTINOS DESTACADOS —
+        # ── DESTINOS DESTACADOS ───────────────────────────────────────────────
         rx.vstack(
             rx.vstack(
                 rx.hstack(
@@ -295,7 +315,7 @@ def home():
             align="center",
         ),
 
-        # — EXPERIENCIAS —
+        # ── EXPERIENCIAS ─────────────────────────────────────────────────────
         rx.vstack(
             rx.vstack(
                 rx.hstack(
@@ -321,10 +341,26 @@ def home():
                 align="center",
             ),
             rx.grid(
-                experiencia_card("/beach_experience.png", "Playas paradisíacas", "Aguas cristalinas y arenas blancas en los mejores destinos."),
-                experiencia_card("/cruise_experience.png", "Cruceros de lujo", "Navega en cruceros premium con todo incluido y vistas espectaculares."),
-                experiencia_card("/resort_experience.png", "Resorts premium", "Hospedajes de lujo con servicios exclusivos frente al mar."),
-                experiencia_card("/adventure_experience.png", "Aventuras y excursiones", "Vive experiencias únicas llenas de adrenalina y naturaleza."),
+                experiencia_card(
+                    "/beach_experience.png",
+                    "Playas paradisíacas",
+                    "Aguas cristalinas y arenas blancas en los mejores destinos.",
+                ),
+                experiencia_card(
+                    "/cruise_experience.png",
+                    "Cruceros de lujo",
+                    "Navega en cruceros premium con todo incluido y vistas espectaculares.",
+                ),
+                experiencia_card(
+                    "/resort_experience.png",
+                    "Resorts premium",
+                    "Hospedajes de lujo con servicios exclusivos frente al mar.",
+                ),
+                experiencia_card(
+                    "/adventure_experience.png",
+                    "Aventuras y excursiones",
+                    "Vive experiencias únicas llenas de adrenalina y naturaleza.",
+                ),
                 columns="4",
                 spacing="7",
                 width="100%",

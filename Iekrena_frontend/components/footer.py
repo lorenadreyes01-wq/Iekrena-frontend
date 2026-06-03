@@ -33,7 +33,7 @@ def footer():
 
                     rx.link("Inicio", href="/", color="rgba(255,255,255,0.75)"),
                     rx.link("Destinos", href="/destinos", color="rgba(255,255,255,0.75)"),
-                    rx.link("Ofertas", href="/destinos", color="rgba(255,255,255,0.75)"),
+                    rx.link("Ofertas", href="/ofertas", color="rgba(255,255,255,0.75)"),
                     rx.link("Reservas", href="/reservas", color="rgba(255,255,255,0.75)"),
 
                     align="start",

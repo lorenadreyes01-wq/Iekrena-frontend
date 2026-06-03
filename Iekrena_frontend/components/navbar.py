@@ -115,43 +115,45 @@ def navbar(active_page: str = "inicio"):
 
             divider(),
 
-            rx.hstack(
-                circle_icon("/search.png"),
-                circle_icon("/user.png"),
+          rx.hstack(
+    circle_icon("/search.png"),
 
-                rx.button(
-                    rx.hstack(
+    rx.link(
+        circle_icon("/user.png"),
+        href="/admin",
+        text_decoration="none",
+    ),
 
-
-                        rx.text(
-                            "Iniciar sesión",
-                            font_size="15px",
-                            font_weight="800",
-                        ),
-
-                        spacing="2",
-                        align="center",
-                    ),
-
-                    background="linear-gradient(135deg, #FFD166, #FFB703)",
-                    color="#001D3D",
-
-                    border_radius="999px",
-
-                    height="62px",
-                    padding="0 34px",
-
-                    box_shadow="0 6px 20px rgba(255,183,3,0.40)",
-
-                    _hover={
-                        "background": "linear-gradient(135deg, #FFE08A, #FFC300)",
-                        "box_shadow": "0 8px 28px rgba(255,183,3,0.55)",
-                    },
-                ),
-
-                spacing="3",
-                align="center",
+    rx.link(
+        rx.button(
+            rx.text(
+                "Iniciar sesión",
+                font_size="15px",
+                font_weight="800",
             ),
+
+            background="linear-gradient(135deg, #FFD166, #FFB703)",
+            color="#001D3D",
+
+            border_radius="999px",
+
+            height="62px",
+            padding="0 34px",
+
+            box_shadow="0 6px 20px rgba(255,183,3,0.40)",
+
+            _hover={
+                "background": "linear-gradient(135deg, #FFE08A, #FFC300)",
+                "box_shadow": "0 8px 28px rgba(255,183,3,0.55)",
+            },
+        ),
+        href="/login",
+        text_decoration="none",
+    ),
+
+    spacing="3",
+    align="center",
+),
 
             width="100%",
             align="center",

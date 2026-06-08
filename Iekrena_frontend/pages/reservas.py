@@ -22,6 +22,11 @@ PRECIO_EXPERIENCIA: int = 50  # precio fijo por experiencia adicional
 
 
 class ReservaState(rx.State):
+
+    nombre_completo: str = ""
+    email: str = ""
+    telefono: str = ""
+
     destino: str = "Punta Cana"
     experiencias: list[str] = []
     personas: int = 1
@@ -59,6 +64,16 @@ class ReservaState(rx.State):
 
     def set_metodo_pago(self, value: str):
         self.metodo_pago = value
+    
+    def set_nombre_completo(self, value: str):
+        self.nombre_completo = value
+
+    def set_email(self, value: str):
+        self.email = value
+
+    def set_telefono(self, value: str):
+        self.telefono = value
+        
 
     def set_personas(self, value: str):
         try:
@@ -94,6 +109,35 @@ class ReservaState(rx.State):
         if not self.experiencias:
             return "Ninguna seleccionada"
         return ", ".join(self.experiencias)
+    
+    def confirmar_reserva(self):
+        import requests
+
+        datos = {
+            "nombre_completo": self.nombre_completo,
+            "email": self.email,
+            "telefono": self.telefono,
+            "pais": "República Dominicana",
+            "destino": self.destino,
+            "fecha_viaje": "2026-07-10",
+            "cantidad_personas": self.personas,
+            "metodo_pago": self.metodo_pago,
+            "total": self.precio_total,
+        }
+
+        respuesta = requests.post(
+            "http://127.0.0.1:8001/reservas",
+            json=datos
+        )
+
+        if respuesta.status_code == 200:
+            return rx.toast.success("Reserva guardada correctamente")
+        else:
+            return rx.toast.error("Error al guardar la reserva")
+    
+
+    
+   
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
@@ -308,12 +352,31 @@ def reservas():
                                 rx.heading("Datos de contacto", color="#001D3D", size="6"),
                                 spacing="3", align="center",
                             ),
-                            rx.grid(
-                                campo("Nombre completo", "Tu nombre completo"),
-                                campo("Correo electrónico", "correo@ejemplo.com", tipo="email"),
-                                columns="2", spacing="3", width="100%",
-                            ),
-                            campo("Teléfono", "+1 (809) 000-0000", tipo="tel"),
+                           rx.grid(
+    campo(
+        "Nombre completo",
+        "Tu nombre completo",
+        ReservaState.set_nombre_completo,
+        value=ReservaState.nombre_completo
+    ),
+    campo(
+        "Correo electrónico",
+        "correo@ejemplo.com",
+        ReservaState.set_email,
+        tipo="email",
+        value=ReservaState.email
+    ),
+    columns="2",
+    spacing="3",
+    width="100%",
+),
+                            campo(
+    "Teléfono",
+    "+1 (809) 000-0000",
+    ReservaState.set_telefono,
+    tipo="tel",
+    value=ReservaState.telefono
+),
                             spacing="4",
                             align="start",
                             width="100%",
@@ -528,6 +591,7 @@ def reservas():
                                     rx.text("Confirmar reserva", font_size="16px", font_weight="900"),
                                     spacing="2", align="center",
                                 ),
+                                on_click=ReservaState.confirmar_reserva,
                                 background="linear-gradient(135deg, #FFD166, #FFB703)",
                                 color="#001D3D",
                                 width="100%",

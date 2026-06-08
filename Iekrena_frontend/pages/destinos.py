@@ -3,6 +3,12 @@ from Iekrena_frontend.components.navbar import navbar
 from Iekrena_frontend.components.footer import footer
 
 
+class DestinosState(rx.State):
+    busqueda: str = ""
+
+    def cargar_busqueda(self):
+         self.busqueda = self.router.page.params.get("destino", "")
+
 def destino_card(nombre, pais, precio, rating, imagen):
     return rx.box(
         rx.vstack(
@@ -87,7 +93,7 @@ def destino_card(nombre, pais, precio, rating, imagen):
                 _hover={"background": "#005F8E", "transform": "translateY(-1px)"},
                 transition="all 0.2s ease",
                  ),
-                href="/detalles",
+                href=f"/detalles?destino={nombre.replace('&', 'and')}",
                 text_decoration="none",
 ),
                     width="100%",
@@ -112,7 +118,7 @@ def destino_card(nombre, pais, precio, rating, imagen):
 
 def destinos():
     return rx.box(
-        navbar("destinos"),
+    navbar("destinos"),
 
         # — HERO DESTINOS —
         rx.box(
@@ -190,6 +196,11 @@ def destinos():
                     text_align="center",
                 ),
                 rx.text(
+    DestinosState.busqueda,
+    color="red",
+    font_weight="900",
+),
+                rx.text(
                     "Descubre los lugares más visitados del Caribe",
                     color="#6B7280",
                     font_size="17px",
@@ -200,22 +211,86 @@ def destinos():
             ),
 
             rx.grid(
-                destino_card("Punta Cana",    "República Dominicana", "$299", "4.9", "/puntacana.jpg"),
-                destino_card("Samaná",        "República Dominicana", "$279", "4.8", "/samana.jpg"),
-                destino_card("Aruba",         "Aruba",                "$349", "4.7", "/aruba.jpg"),
-                destino_card("Jamaica",       "Jamaica",              "$309", "4.6", "/jamaica.jpg"),
-                destino_card("Cartagena",     "Colombia",             "$269", "4.9", "/cartagena.jpg"),
-                destino_card("San Juan",      "Puerto Rico",          "$289", "4.8", "/sanjuan.jpg"),
-                destino_card("Cancún",        "México",               "$329", "4.8", "/Cancun.jpg"),
-                destino_card("Bahamas",       "Bahamas",              "$499", "4.9", "/bahamas.jpg"),
-                destino_card("Turks & Caicos","Caribe",               "$599", "5.0", "/turksandcaicos.jpg"),
-                destino_card("Bora Bora",  "Polinesia Francesa", "$899", "5.0", "/borabora.jpg"),
-                destino_card("Maldivas",   "Maldivas",           "$999", "5.0", "/maldivas.jpg"),
-                destino_card("Puerto Rico","Puerto Rico",         "$289", "4.8", "/puertorico.jpg"),
-                columns="3",
-                spacing="6",
-                width="100%",
-            ),
+
+    rx.cond(
+        (DestinosState.busqueda == "") | (DestinosState.busqueda.lower() == "punta cana"),
+        destino_card("Punta Cana", "República Dominicana", "$299", "4.9", "/puntacana.jpg"),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DestinosState.busqueda == "") | (DestinosState.busqueda.lower() == "samaná") | (DestinosState.busqueda.lower() == "samana"),
+        destino_card("Samaná", "República Dominicana", "$279", "4.8", "/samana.jpg"),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DestinosState.busqueda == "") | (DestinosState.busqueda.lower() == "aruba"),
+        destino_card("Aruba", "Aruba", "$349", "4.7", "/aruba.jpg"),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DestinosState.busqueda == "") | (DestinosState.busqueda.lower() == "jamaica"),
+        destino_card("Jamaica", "Jamaica", "$309", "4.6", "/jamaica.jpg"),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DestinosState.busqueda == "") | (DestinosState.busqueda.lower() == "cartagena"),
+        destino_card("Cartagena", "Colombia", "$269", "4.9", "/cartagena.jpg"),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DestinosState.busqueda == "") | (DestinosState.busqueda.lower() == "san juan"),
+        destino_card("San Juan", "Puerto Rico", "$289", "4.8", "/sanjuan.jpg"),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DestinosState.busqueda == "") | (DestinosState.busqueda.lower() == "cancún") | (DestinosState.busqueda.lower() == "cancun"),
+        destino_card("Cancún", "México", "$329", "4.8", "/Cancun.jpg"),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DestinosState.busqueda == "") | (DestinosState.busqueda.lower() == "bahamas"),
+        destino_card("Bahamas", "Bahamas", "$499", "4.9", "/bahamas.jpg"),
+        rx.box(),
+    ),
+
+   rx.cond(
+    (DestinosState.busqueda == "") |
+    (DestinosState.busqueda.lower() == "turks & caicos") |
+    (DestinosState.busqueda.lower() == "turks and caicos") |
+    (DestinosState.busqueda.lower() == "turks caicos"),
+    destino_card("Turks & Caicos", "Caribe", "$599", "5.0", "/turksandcaicos.jpg"),
+    rx.box(),
+),
+
+    rx.cond(
+        (DestinosState.busqueda == "") | (DestinosState.busqueda.lower() == "bora bora"),
+        destino_card("Bora Bora", "Polinesia Francesa", "$899", "5.0", "/borabora.jpg"),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DestinosState.busqueda == "") | (DestinosState.busqueda.lower() == "maldivas"),
+        destino_card("Maldivas", "Maldivas", "$999", "5.0", "/maldivas.jpg"),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DestinosState.busqueda == "") | (DestinosState.busqueda.lower() == "puerto rico"),
+        destino_card("Puerto Rico", "Puerto Rico", "$289", "4.8", "/puertorico.jpg"),
+        rx.box(),
+    ),
+
+    columns="3",
+    spacing="6",
+    width="100%",
+),
 
             spacing="8",
             padding="70px 60px",
@@ -225,4 +300,6 @@ def destinos():
         ),
 
         footer(),
+
+       
     )

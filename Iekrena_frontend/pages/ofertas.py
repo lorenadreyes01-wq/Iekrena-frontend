@@ -1,3 +1,4 @@
+from Iekrena_frontend.pages.admin import AdminState
 import reflex as rx
 from Iekrena_frontend.components.navbar import navbar
 from Iekrena_frontend.components.footer import footer
@@ -13,6 +14,7 @@ def oferta_card(nombre, pais, imagen, antes, ahora, descuento):
                     height="210px",
                     object_fit="cover",
                 ),
+            
                 rx.box(
                     descuento,
                     position="absolute",
@@ -60,7 +62,7 @@ def oferta_card(nombre, pais, imagen, antes, ahora, descuento):
                         height="42px",
                         font_weight="800",
                     ),
-                    href="/detalles",
+                    href=f"/detalles?destino={pais}",
                     width="100%",
                 ),
  
@@ -76,7 +78,36 @@ def oferta_card(nombre, pais, imagen, antes, ahora, descuento):
         overflow="hidden",
         box_shadow="0 12px 34px rgba(0,0,0,0.12)",
     )
- 
+
+def oferta_admin_card(oferta):
+    return oferta_card(
+        oferta.destino.upper(),
+        oferta.destino,
+        rx.cond(
+            oferta.destino == "Aruba",
+            "/aruba_offer.png",
+            rx.cond(
+                oferta.destino == "Bahamas",
+                "/bahamas_offer.jpg",
+                rx.cond(
+                    oferta.destino == "Cancún",
+                    "/cancun_offer.jpg",
+                    rx.cond(
+                        oferta.destino == "Jamaica",
+                        "/jamaica.jpg",
+                        rx.cond(
+                            oferta.destino == "Bora Bora",
+                            "/borabora_offer.jpg",
+                            "/puntacana.offer.png",
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        "$" + oferta.precio_original,
+        "$" + oferta.precio_oferta,
+        "OFERTA"
+    )
  
 def premium_card(nombre, texto, imagen, precio):
     return rx.box(
@@ -116,20 +147,20 @@ def premium_card(nombre, texto, imagen, precio):
                     align="end",
                 ),
  
-                rx.link(
-                    rx.button(
-                        "Ver oferta",
-                        background="transparent",
-                        color="white",
-                        border="1px solid #FFB703",
-                        border_radius="999px",
-                        width="100%",
-                        height="40px",
-                        font_weight="800",
-                    ),
-                    href="/detalles",
-                    width="100%",
-                ),
+               rx.link(
+    rx.button(
+        "Ver oferta",
+        background="transparent",
+        color="#0077B6",
+        border="1px solid #FFB703",
+        border_radius="999px",
+        width="100%",
+        height="42px",
+        font_weight="800",
+    ),
+    href=f"/detalles?destino={nombre}",
+    width="100%",
+),
  
                 spacing="2",
                 align="start",
@@ -191,7 +222,7 @@ def ofertas():
                         font_weight="900",
                         box_shadow="0 8px 24px rgba(255,183,3,0.35)",
                     ),
-                    href="/detalles",
+                   href="/detalles",
                 ),
  
                 spacing="3",
@@ -227,18 +258,15 @@ def ofertas():
                 color="#6B7280",
             ),
  
-            rx.grid(
-                oferta_card("PUNTA CANA", "República Dominicana", "/puntacana.offer.png", "$499", "$299", "-40%"),
-                oferta_card("ARUBA", "Aruba", "/aruba_offer.png", "$699", "$449", "-36%"),
-                oferta_card("BAHAMAS", "Bahamas", "/bahamas_offer.jpg", "$899", "$599", "-33%"),
-                oferta_card("CANCÚN", "México", "/cancun_offer.jpg", "$599", "$379", "-37%"),
-                oferta_card("SAMANÁ", "República Dominicana", "/samana.jpg", "$549", "$385", "-30%"),
-                oferta_card("JAMAICA", "Jamaica", "/jamaica.jpg", "$699", "$499", "-28%"),
-                columns="3",
-                spacing="6",
-                width="100%",
-            ),
- 
+           rx.grid(
+    rx.foreach(
+         AdminState.ofertas_activas_lista,
+        oferta_admin_card,
+    ),
+    columns="3",
+    spacing="6",
+    width="100%",
+),
             spacing="5",
             padding="70px 60px",
             background="#F8FAFC",

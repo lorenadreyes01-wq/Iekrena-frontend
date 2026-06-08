@@ -2,6 +2,12 @@ import reflex as rx
 from Iekrena_frontend.components.navbar import navbar
 from Iekrena_frontend.components.footer import footer
 
+class DetallesState(rx.State):
+    destino: str = ""
+
+    def cargar_destino(self):
+        self.destino = self.router.page.params.get("destino", "")
+
 
 DESTINOS = [
     {
@@ -356,12 +362,91 @@ def detalles():
             padding_top="120px",
         ),
 
-        rx.vstack(
-            *[detalle_card(destino) for destino in DESTINOS],
-            spacing="5",
-            padding="40px",
-            background="#F8FAFC",
-        ),
+       rx.vstack(
 
-        footer(),
-    )
+    rx.cond(
+        (DetallesState.destino == "") | (DetallesState.destino.lower() == "punta cana"),
+        detalle_card(DESTINOS[0]),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DetallesState.destino == "") | ((DetallesState.destino).lower() == "samaná") | ((DetallesState.destino).lower() == "samana"),
+        detalle_card(DESTINOS[1]),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DetallesState.destino == "") | ((DetallesState.destino).lower() == "aruba"),
+        detalle_card(DESTINOS[2]),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DetallesState.destino == "") | ((DetallesState.destino).lower() == "jamaica"),
+        detalle_card(DESTINOS[3]),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DetallesState.destino == "") | ((DetallesState.destino).lower() == "cartagena"),
+        detalle_card(DESTINOS[4]),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DetallesState.destino == "") | ((DetallesState.destino).lower() == "san juan"),
+        detalle_card(DESTINOS[5]),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DetallesState.destino == "") | ((DetallesState.destino).lower() == "cancún") | ((DetallesState.destino).lower() == "cancun"),
+        detalle_card(DESTINOS[6]),
+        rx.box(),
+    ),
+
+    rx.cond(
+    (DetallesState.destino == "") | ((DetallesState.destino).lower() == "bahamas"),
+    detalle_card(DESTINOS[7]),
+    rx.box(),
+    ),
+
+   rx.cond(
+    (
+        (DetallesState.destino == "") |
+        ((DetallesState.destino).lower() == "turks & caicos") |
+        ((DetallesState.destino).lower() == "turks caicos") |
+        ((DetallesState.destino).lower() == "turks and caicos")
+    ),
+    detalle_card(DESTINOS[8]),
+    rx.box(),
+),
+    rx.cond(
+        (DetallesState.destino == "") | ((DetallesState.destino).lower() == "bora bora"),
+        detalle_card(DESTINOS[9]),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DetallesState.destino == "") | ((DetallesState.destino).lower() == "maldivas"),
+        detalle_card(DESTINOS[10]),
+        rx.box(),
+    ),
+
+    rx.cond(
+        (DetallesState.destino == "") | ((DetallesState.destino).lower() == "puerto rico"),
+        detalle_card(DESTINOS[11]),
+        rx.box(),
+),
+    ),
+
+      rx.vstack(
+        # todos los rx.cond aquí dentro
+        spacing="5",
+        padding="40px",
+        background="#F8FAFC",
+    ),
+
+    footer(),
+)

@@ -2,7 +2,32 @@ import reflex as rx
 from Iekrena_frontend.components.navbar import navbar
 from Iekrena_frontend.components.footer import footer
 
+class BusquedaState(rx.State):
+    destino: str = ""
+    fecha: str = ""
+    personas: int = 1
 
+    destinos_opciones: list[str] = [
+        "Punta Cana", "Samaná", "Aruba", "Jamaica", "Cartagena",
+        "San Juan", "Cancún", "Bahamas", "Turks & Caicos",
+        "Bora Bora", "Maldivas", "Puerto Rico"
+    ]
+
+    def set_destino(self, value: str):
+        self.destino = value
+
+    def set_fecha(self, value: str):
+        self.fecha = value
+
+    def aumentar_personas(self):
+        self.personas += 1
+
+    def disminuir_personas(self):
+        if self.personas > 1:
+            self.personas -= 1
+
+    def  buscar(self):
+         return rx.window_alert("Buscador funcionando")
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def destino_card(nombre: str, pais: str, precio: str, rating: str, imagen: str):
@@ -79,7 +104,7 @@ def destino_card(nombre: str, pais: str, precio: str, rating: str, imagen: str):
                             _hover={"background": "#005F92"},
                             transition="background 0.15s",
                         ),
-                        href="/detalles",
+                        href=f"/detalles?destino={nombre}",
                     ),
                     width="100%",
                     align="center",
@@ -193,21 +218,42 @@ def home():
                 rx.box(
                     rx.hstack(
                         rx.el.input(
-                            placeholder="¿A dónde quieres viajar?",
-                            style={
-                                "border": "none",
-                                "outline": "none",
-                                "background": "transparent",
-                                "box_shadow": "none",
-                                "color": "#000000",
-                                "width": "250px",
-                                "font_size": "15px",
-                                "padding": "0",
-                            },
-                        ),
+    placeholder="¿A dónde quieres viajar?",
+    value=BusquedaState.destino,
+    on_change=BusquedaState.set_destino,
+    list="destinos-lista",
+    style={
+        "border": "none",
+        "outline": "none",
+        "background": "transparent",
+        "box_shadow": "none",
+        "color": "#000000",
+        "width": "250px",
+        "font_size": "15px",
+        "padding": "0",
+    },
+),
+                        rx.el.datalist(
+    rx.el.option(value="Punta Cana"),
+    rx.el.option(value="Samaná"),
+    rx.el.option(value="Aruba"),
+    rx.el.option(value="Jamaica"),
+    rx.el.option(value="Cartagena"),
+    rx.el.option(value="San Juan"),
+    rx.el.option(value="Cancún"),
+    rx.el.option(value="Bahamas"),
+    rx.el.option(value="Turks & Caicos"),
+    rx.el.option(value="Bora Bora"),
+    rx.el.option(value="Maldivas"),
+    rx.el.option(value="Puerto Rico"),
+    id="destinos-lista",
+),
+
                         rx.box(width="1px", height="35px", background="#D1D5DB"),
                         rx.el.input(
-                            placeholder="Fecha",
+                            type="date",
+value=BusquedaState.fecha,
+on_change=BusquedaState.set_fecha,
                             style={
                                 "border": "none",
                                 "outline": "none",
@@ -220,32 +266,62 @@ def home():
                             },
                         ),
                         rx.box(width="1px", height="35px", background="#D1D5DB"),
-                        rx.el.input(
-                            placeholder="Personas",
-                            style={
-                                "border": "none",
-                                "outline": "none",
-                                "background": "transparent",
-                                "box_shadow": "none",
-                                "color": "#000000",
-                                "width": "130px",
-                                "font_size": "15px",
-                                "padding": "0",
-                            },
-                        ),
-                        rx.button(
-                            "Buscar",
-                            background="#FFB703",
-                            color="#001D3D",
-                            font_weight="900",
-                            border_radius="14px",
-                            height="46px",
-                            padding="0 28px",
-                            border="none",
-                            cursor="pointer",
-                            _hover={"background": "#FFC107"},
-                            transition="background 0.15s",
-                        ),
+                       rx.hstack(
+    rx.el.button(
+        "-",
+        on_click=BusquedaState.disminuir_personas,
+        style={
+            "width": "30px",
+            "height": "30px",
+            "border_radius": "8px",
+            "border": "none",
+            "background": "#E5E7EB",
+            "cursor": "pointer",
+            "font_weight": "800",
+        },
+    ),
+    rx.text(BusquedaState.personas, color="#001D3D", font_weight="800"),
+    rx.el.button(
+        "+",
+        on_click=BusquedaState.aumentar_personas,
+        style={
+            "width": "30px",
+            "height": "30px",
+            "border_radius": "8px",
+            "border": "none",
+            "background": "#E5E7EB",
+            "cursor": "pointer",
+            "font_weight": "800",
+        },
+    ),
+    spacing="2",
+    align="center",
+),
+                     rx.link(
+    rx.button(
+        "Buscar",
+        background="#FFB703",
+        color="#001D3D",
+        font_weight="900",
+        border_radius="14px",
+        height="46px",
+        padding="0 28px",
+        border="none",
+        cursor="pointer",
+        _hover={"background": "#FFC107"},
+        transition="background 0.15s",
+    ),
+    href=rx.cond(
+    BusquedaState.destino == "",
+    "/destinos",
+    rx.cond(
+        BusquedaState.destino == "Turks & Caicos",
+        "/destinos?destino=Turks%20and%20Caicos",
+        "/destinos?destino=" + BusquedaState.destino,
+    ),
+),
+    text_decoration="none",
+),
                         spacing="3",
                         align="center",
                         justify="center",

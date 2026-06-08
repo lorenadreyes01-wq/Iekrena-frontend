@@ -1,6 +1,24 @@
+from Iekrena_frontend.auth_state import AuthState
 import reflex as rx
 from Iekrena_frontend.components.navbar import navbar
 from Iekrena_frontend.components.footer import footer
+
+class LoginState(rx.State):
+    correo: str = ""
+    password: str = ""
+    error: str = ""
+
+    def set_correo(self, value: str):
+        self.correo = value
+
+    def set_password(self, value: str):
+        self.password = value
+
+    def iniciar_sesion(self):
+        if self.correo == "admin@iekrenatrips.com" and self.password == "admin123":
+            self.error = ""
+        else:
+            self.error = "Correo o contraseña incorrectos"
 
 
 def login():
@@ -37,6 +55,8 @@ def login():
                         width="100%",
                         height="56px",
                         border_radius="14px",
+                        value=LoginState.correo,
+                        on_change=LoginState.set_correo,
                     ),
 
                     rx.input(
@@ -45,19 +65,28 @@ def login():
                         width="100%",
                         height="56px",
                         border_radius="14px",
+                        value=LoginState.password,
+                        on_change=LoginState.set_password,
                     ),
 
-                    rx.button(
-                        "Iniciar sesión",
-                        background="#FFB703",
-                        color="#001D3D",
-                        width="100%",
-                        height="56px",
-                        border_radius="14px",
-                        font_weight="900",
-                        font_size="16px",
-                        box_shadow="0 8px 24px rgba(255,183,3,0.35)",
-                    ),
+                 rx.link(
+    rx.button(
+        "Iniciar sesión",
+        on_click=AuthState.iniciar,
+        background="#FFB703",
+        color="#001D3D",
+        width="100%",
+        height="56px",
+        border_radius="14px",
+        font_weight="900",
+        font_size="16px",
+        box_shadow="0 8px 24px rgba(255,183,3,0.35)",
+        cursor="pointer",
+    ),
+    href="/admin",
+    width="100%",
+    text_decoration="none",
+),
 
                     rx.box(
                         rx.text(

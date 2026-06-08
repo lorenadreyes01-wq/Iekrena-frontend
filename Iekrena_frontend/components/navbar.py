@@ -1,3 +1,4 @@
+from Iekrena_frontend.auth_state import AuthState
 import reflex as rx
 
 
@@ -118,7 +119,10 @@ def navbar(active_page: str = "inicio"):
          
     rx.hstack(
     circle_icon("/search.png", "/"),
-    circle_icon("/user.png", "/admin"),
+    circle_icon(
+    "/user.png",
+    rx.cond(AuthState.autenticado, "/admin", "/login")
+),
 
   
 

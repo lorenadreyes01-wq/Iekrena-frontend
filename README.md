@@ -227,7 +227,7 @@ poetry --version
 
 **Lorena Duran Reyes**
 
-**Iekna Frank**
+**Iekna F. Lora Alburquerque**
 
 Colegio CAFAM
 Técnico en Informática

@@ -1,5 +1,5 @@
 import reflex as rx
-
+import requests
 
 from pydantic import BaseModel
 
@@ -12,6 +12,7 @@ class Oferta(BaseModel):
 
 
 class AdminState(rx.State):
+    reservas: list[dict] = []
     ofertas: list[Oferta] = [
         Oferta(id=1, destino="Punta Cana",    precio_original="499",  precio_oferta="299", activa=True),
         Oferta(id=2, destino="Aruba",          precio_original="699",  precio_oferta="449", activa=True),
@@ -19,7 +20,9 @@ class AdminState(rx.State):
         Oferta(id=4, destino="Cancún",         precio_original="599",  precio_oferta="379", activa=True),
         Oferta(id=5, destino="Jamaica",        precio_original="509",  precio_oferta="309", activa=False),
         Oferta(id=6, destino="Bora Bora",      precio_original="1200", precio_oferta="899", activa=True),
+        
     ]
+
 
     modal_abierto: bool = False
     editando_id: int = -1
@@ -59,18 +62,18 @@ class AdminState(rx.State):
             self.ofertas = self.ofertas + [Oferta(
                 id=nuevo_id,
                 destino=self.form_destino,
-                precio_original=self.form_precio_original,
-                precio_oferta=self.form_precio_oferta,
+                precio_original=str(self.form_precio_original),
+                precio_oferta=str(self.form_precio_oferta),
                 activa=True,
             )]
         else:
             self.ofertas = [
                 Oferta(
-                    id=o.id,
-                    destino=self.form_destino,
-                    precio_original=self.form_precio_original,
-                    precio_oferta=self.form_precio_oferta,
-                    activa=o.activa,
+                  id=o.id,
+                  destino=self.form_destino,
+                  precio_original=str(self.form_precio_original),
+                  precio_oferta=str(self.form_precio_oferta),
+                  activa=o.activa,
                 ) if o.id == self.editando_id else o
                 for o in self.ofertas
             ]
@@ -87,13 +90,38 @@ class AdminState(rx.State):
             for o in self.ofertas
         ]
 
+    def cargar_reservas(self):
+        try:
+            respuesta = requests.get(
+                "http://127.0.0.1:8001/reservas"
+            )
+
+            if respuesta.status_code == 200:
+                self.reservas = respuesta.json()
+
+        except Exception as e:
+            print(e)
+
     @rx.var
     def total_ofertas(self) -> int:
         return len(self.ofertas)
-
+    
     @rx.var
     def ofertas_activas(self) -> int:
         return sum(1 for o in self.ofertas if o.activa)
+    
+    @rx.var
+    def ofertas_activas_lista(self) -> list[Oferta]:
+        return [o for o in self.ofertas if o.activa]
+
+    @rx.var
+    def total_reservas(self) -> int:
+        return len(self.reservas)
+    
+    @rx.var
+    def total_ventas(self) -> str:
+        return "$1,196"
+        
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
@@ -398,20 +426,20 @@ def admin():
                         rx.vstack(
                             rx.text("PANEL ADMINISTRATIVO", color="#0077B6", font_weight="900",
                                     font_size="12px", letter_spacing="0.10em"),
-                            rx.heading("Bienvenida, Lorena 👋", color="#001D3D", size="7", font_weight="900"),
+                            rx.heading("Bienvenida, IEKRENA 👋", color="#001D3D", size="7", font_weight="900"),
                             spacing="0", align="start",
                         ),
                         rx.spacer(),
                         rx.box(
                             rx.hstack(
                                 rx.box(
-                                    rx.text("L", color="white", font_weight="900", font_size="16px"),
+                                    rx.text("IL", color="white", font_weight="900", font_size="16px"),
                                     width="42px", height="42px", border_radius="999px",
                                     background="#0077B6",
                                     display="flex", align_items="center", justify_content="center",
                                 ),
                                 rx.vstack(
-                                    rx.text("Lorena Admin", font_weight="800", font_size="14px", color="#001D3D"),
+                                    rx.text("Iekrena admin", font_weight="800", font_size="14px", color="#001D3D"),
                                     rx.text("Administradora", font_size="12px", color="#6B7280"),
                                     spacing="0", align="start",
                                 ),
@@ -423,10 +451,10 @@ def admin():
 
                     # Stats
                     rx.grid(
-                        stat_card("calendar-check", "Reservas totales",  "1,248", "+12% este mes", "#0077B6"),
-                        stat_card("users",           "Visitantes",        "5,432", "+18% esta semana", "#7C3AED"),
+                        stat_card("calendar-check", "Reservas totales",  AdminState.total_reservas, "+12% este mes", "#0077B6"),
+                        stat_card("users",           "Visitantes",        "55.6 mil", "+18% esta semana", "#7C3AED"),
                         stat_card("tag",             "Ofertas activas",   AdminState.ofertas_activas.to_string(), "Actualizadas", "#059669"),
-                        stat_card("dollar-sign",     "Ventas USD",        "$125,680", "+15% este mes", "#EA580C"),
+                        stat_card("dollar-sign",     "Ventas USD",        AdminState.total_ventas, "+15% este mes", "#EA580C"),
                         columns="4",
                         spacing="4",
                         width="100%",
@@ -461,6 +489,7 @@ def admin():
                                             rx.text("Nueva oferta", font_weight="800", font_size="14px"),
                                             spacing="2", align="center",
                                         ),
+                                 
                                         on_click=AdminState.abrir_nueva,
                                         background="linear-gradient(135deg, #FFD166, #FFB703)",
                                         color="#001D3D",
@@ -473,6 +502,17 @@ def admin():
                                         _hover={"transform": "translateY(-1px)"},
                                         transition="all 0.2s",
                                     ),
+                                    rx.button(
+    "Actualizar reservas",
+    on_click=AdminState.cargar_reservas,
+    background="#0077B6",
+    color="white",
+    border_radius="12px",
+    height="44px",
+    padding="0 20px",
+    border="none",
+    cursor="pointer",
+),
                                     spacing="3", align="center",
                                 ),
                                 width="100%", align="center",
@@ -487,6 +527,44 @@ def admin():
                                 width="100%",
                             ),
 
+                            rx.box(
+    rx.vstack(
+        rx.heading("Reservas recientes", color="#001D3D", size="6"),
+
+        rx.foreach(
+            AdminState.reservas,
+            lambda reserva: rx.box(
+                rx.vstack(
+                    rx.text(reserva.get("nombre_completo", ""), font_weight="800", color="#001D3D"),
+                    rx.text(reserva.get("email", ""), color="#64748B"),
+                   rx.hstack(
+    rx.text("Destino:", color="#0077B6", font_weight="700"),
+    rx.text(reserva.get("destino", ""), color="#0077B6", font_weight="700"),
+    spacing="1",
+),
+rx.hstack(
+    rx.text("Total:", color="#FFB703", font_weight="900"),
+    rx.text(reserva.get("total", ""), color="#FFB703", font_weight="900"),
+    spacing="1",
+),
+                    spacing="1",
+                    align="start",
+                ),
+                background="#F8FAFC",
+                padding="16px",
+                border_radius="14px",
+                width="100%",
+            ),
+        ),
+
+        spacing="3",
+        align="start",
+        width="100%",
+    ),
+    width="100%",
+),
+
+                            
                             spacing="5",
                             align="start",
                             width="100%",
